@@ -10,8 +10,6 @@ import anthropic
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
-print(f"KEY VALUE: {os.getenv('ANTHROPIC_API_KEY')}")
-
 app = Flask(__name__)
 CORS(app)
 
@@ -138,21 +136,6 @@ def export():
         json.dump(data, f, indent=2)
     return jsonify({"filename": filename, "status": "saved"})
 
-def run_against_anthropic(prompt):
-    try:
-        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-        start = time.time()
-        message = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=512,
-            messages=[{"role": "user", "content": prompt}]
-        )
-        elapsed = round(time.time() - start, 2)
-        return message.content[0].text.strip(), elapsed, None
-    except Exception as e:
-        print(f"ANTHROPIC ERROR: {e}")
-        return "", 0, str(e)
-    
-    
+
 if __name__ == "__main__":
     app.run(debug=True, port=5056)
